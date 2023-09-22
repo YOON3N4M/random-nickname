@@ -38,6 +38,8 @@ function App() {
     setNicknameArr((prev) => [...prev, nickname]);
   }
 
+  function onWordClick() {}
+
   function random() {
     if (nicknameArr.length > 0) {
       const randomNum = Math.floor(Math.random() * (nicknameArr.length - 0));
