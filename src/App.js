@@ -14,6 +14,11 @@ const VFlexBox = styled.div`
   flex-direction: column;
 `;
 
+const ChooseButton = styled.button`
+  margin-top: 15px;
+  margin-bottom: 15px;
+`;
+
 function App() {
   const [inputValue, setInputValue] = useState("");
   const [nicknameArr, setNicknameArr] = useState([]);
@@ -32,8 +37,11 @@ function App() {
 
   function onSubmit(event) {
     event.preventDefault();
+    localStorage.setItem(
+      "nickname",
+      JSON.stringify([...nicknameArr, inputValue])
+    );
     setNicknameArr((prev) => [...prev, inputValue]);
-    localStorage.setItem("nickname", JSON.stringify(nicknameArr));
   }
 
   function random() {
@@ -46,6 +54,11 @@ function App() {
     }
   }
 
+  function reset() {
+    localStorage.removeItem("nickname");
+    setNicknameArr([]);
+  }
+
   useEffect(() => {
     getNickname();
   }, []);
@@ -53,6 +66,7 @@ function App() {
   useEffect(() => {
     setInputValue("");
   }, [nicknameArr]);
+
   return (
     <div className="App">
       <Container>
@@ -61,8 +75,10 @@ function App() {
             <form onSubmit={onSubmit}>
               <label>닉네임을 입력해주세요.</label>
               <input onChange={onChangeInput} value={inputValue}></input>
+              <button type="submit">입력</button>
             </form>
-            <button onClick={random}>뽑기!</button>
+            <ChooseButton onClick={random}>뽑기!</ChooseButton>
+            <ChooseButton onClick={reset}>초기화!</ChooseButton>
             {nicknameArr.length > 0 &&
               nicknameArr.map((nick) => <span>{nick}</span>)}
           </VFlexBox>
