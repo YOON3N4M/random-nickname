@@ -49,7 +49,7 @@ function App() {
       toast({
         duration: 3000,
         render: () => (
-          <Center color="white" p={3} bg="blue.500">
+          <Center color="white" p={3} bg="blue.500" borderRadius={"4px"}>
             {nicknameArr[randomNum]}
           </Center>
         ),
