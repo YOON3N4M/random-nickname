@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/random-nickname/static/js/main.782cd44c.js",
+    "index.html": "/random-nickname/index.html",
+    "main.782cd44c.js.map": "/random-nickname/static/js/main.782cd44c.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.782cd44c.js"
+  ]
+}
