@@ -211,17 +211,18 @@ function App() {
                 >
                   랜덤 뽑기
                 </Button>
-
-                <HStack
-                  flexWrap={"wrap"}
+                <VStack
                   border={"1px solid #d3d3d3"}
                   p={"15px 20px"}
                   borderRadius={"4px"}
                   w={"100%"}
                 >
-                  {nicknameArr.length !== 0 &&
-                    nicknameArr.map((nick) => <Badge>{nick}</Badge>)}
-                </HStack>
+                  <Text fontSize={"sm"}>{nicknameArr.length}개</Text>
+                  <HStack flexWrap={"wrap"} w={"100%"}>
+                    {nicknameArr.length !== 0 &&
+                      nicknameArr.map((nick) => <Badge>{nick}</Badge>)}
+                  </HStack>
+                </VStack>
               </>
             )}
           </VStack>
