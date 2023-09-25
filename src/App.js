@@ -1,259 +1,317 @@
 import {
-  Badge,
-  Box,
-  Button,
-  Center,
-  Flex,
-  FormLabel,
-  HStack,
-  Input,
-  Select,
-  Text,
-  useToast,
-  VStack,
-} from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { styled } from "styled-components";
-import AddModal from "./AddModal";
+	Badge,
+	Box,
+	Button,
+	Center,
+	Checkbox,
+	Flex,
+	FormLabel,
+	HStack,
+	Input,
+	NumberDecrementStepper,
+	NumberIncrementStepper,
+	NumberInput,
+	NumberInputField,
+	NumberInputStepper,
+	Select,
+	Text,
+	useToast,
+	VStack,
+} from '@chakra-ui/react'
+import { useEffect, useState } from 'react'
+import AddModal from './AddModal'
 
 function App() {
-  const [nickname, setNickname] = useState("");
-  const [nicknameArr, setNicknameArr] = useState([]);
-  const [categoryArr, setCategoryArr] = useState([]);
-  const [selectedNickname, setSelectedNickname] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [isModalOn, setIsModalOn] = useState(false);
-  const toast = useToast();
+	const [nickname, setNickname] = useState('')
+	const [nicknameArr, setNicknameArr] = useState([])
+	const [categoryArr, setCategoryArr] = useState([])
+	const [selectedNickname, setSelectedNickname] = useState('')
+	const [selectedCategory, setSelectedCategory] = useState('')
+	const [isModalOn, setIsModalOn] = useState(false)
+	const [randomCount, setRandomCount] = useState(1)
+	const [canExist, setCanExist] = useState(false)
+	const toast = useToast()
 
-  function onChangeInput(event) {
-    setNickname(event.target.value);
-  }
+	function onChangeInput(event) {
+		setNickname(event.target.value)
+	}
 
-  function onSubmit(event) {
-    event.preventDefault();
-    if(selectedCategory.includes("-word-list")){
-      localStorage.setItem(
-        `${selectedCategory}`,
-        JSON.stringify([...nicknameArr, nickname])
-      );
-    } else {
-      localStorage.setItem(
-        `${selectedCategory}-word-list`,
-        JSON.stringify([...nicknameArr, nickname])
-      );
-    }
-   
-    setNicknameArr((prev) => [...prev, nickname]);
-  }
+	function onSubmit(event) {
+		event.preventDefault()
+		if (selectedCategory.includes('-word-list')) {
+			localStorage.setItem(
+				`${selectedCategory}`,
+				JSON.stringify([...nicknameArr, nickname]),
+			)
+		} else {
+			localStorage.setItem(
+				`${selectedCategory}-word-list`,
+				JSON.stringify([...nicknameArr, nickname]),
+			)
+		}
 
-  function onWordClick(word) {
-    const filtered = nicknameArr.filter((item)=> item !== word)
-    setNicknameArr(filtered)
-    if(selectedCategory.includes("-word-list")){
-      localStorage.setItem(
-        `${selectedCategory}`,
-        JSON.stringify(filtered)
-      );
-    } else {
-      localStorage.setItem(
-        `${selectedCategory}-word-list`,
-        JSON.stringify(filtered)
-      );
-    }
-   
-  }
+		setNicknameArr((prev) => [...prev, nickname])
+	}
 
-  function random() {
-    if (nicknameArr.length > 0) {
-      const randomNum = Math.floor(Math.random() * (nicknameArr.length - 0));
-      console.log(randomNum);
-      ///  alert(`${nicknameArr[randomNum]}`);
+	function onWordClick(word) {
+		const filtered = nicknameArr.filter((item) => item !== word)
+		setNicknameArr(filtered)
+		if (selectedCategory.includes('-word-list')) {
+			localStorage.setItem(`${selectedCategory}`, JSON.stringify(filtered))
+		} else {
+			localStorage.setItem(
+				`${selectedCategory}-word-list`,
+				JSON.stringify(filtered),
+			)
+		}
+	}
 
-      toast({
-        duration: 3000,
-        render: () => (
-          <Center color="white" p={3} bg="blue.500" borderRadius={"4px"}>
-            {nicknameArr[randomNum]}
-          </Center>
-        ),
-      });
-    } else {
-      toast({
-        duration: 3000,
-        render: () => (
-          <Center color="white" p={3} bg="red.500">
-            저장된 닉네임이 없습니다.
-          </Center>
-        ),
-      });
-    }
-  }
+	function random() {
+		if (nicknameArr.length > 0) {
+			///  alert(`${nicknameArr[randomNum]}`);
 
-  function resetCategory() {
-    if (window.confirm("정말 삭제하시겠습니까?")) {
-      localStorage.removeItem(selectedCategory);
-      const filtered = categoryArr.filter(
-        (category) => category !== selectedCategory
-      );
+			let randomNicknameArr = []
 
-      setCategoryArr(filtered);
-      setNicknameArr([]);
-    } else {
-      return;
-    }
-  }
+			if (nicknameArr.length < randomCount) {
+				alert('한번에 뽑는 단어의 수가 저장된 단어의 수 보다 많습니다.')
+			} else {
+				if (canExist) {
+					for (let i = 0; i < randomCount; i++) {
+						const randomNum = Math.floor(Math.random() * nicknameArr.length)
+						randomNicknameArr.push(`${nicknameArr[randomNum]} `)
+					}
+				} else {
+					while (randomNicknameArr.length < randomCount) {
+						const randomNum = Math.floor(Math.random() * nicknameArr.length)
+						const randomNickname = nicknameArr[randomNum]
 
-  function getCategoryByKey() {
-    //스토리지 키 불러오기
-    const localLength = localStorage.length;
-    let localKeyArr = [];
+						// 중복 체크
+						if (!randomNicknameArr.includes(randomNickname)) {
+							randomNicknameArr.push(randomNickname)
+						}
+					}
+				}
+			}
+			//  console.log(randomNicknameArr)
+			toast({
+				duration: 3000,
+				render: () => (
+					<Center color="white" p={3} bg="blue.500" borderRadius={'4px'}>
+						{randomNicknameArr.map((item) => (
+							<Text mr={'3px'}>{item}</Text>
+						))}
+					</Center>
+				),
+			})
+		} else {
+			toast({
+				duration: 3000,
+				render: () => (
+					<Center color="white" p={3} bg="red.500">
+						저장된 닉네임이 없습니다.
+					</Center>
+				),
+			})
+		}
+	}
 
-    for (let i = 0; i < localLength; i++) {
-      const key = localStorage.key(i);
-      if (key.includes("word-list")) {
-        localKeyArr.push(key);
-      }
-      setCategoryArr(localKeyArr);
-      if (localKeyArr.length < 0) return;
-      setSelectedCategory(localKeyArr[0]);
-    }
-  }
+	function resetCategory() {
+		if (window.confirm('정말 삭제하시겠습니까?')) {
+			localStorage.removeItem(selectedCategory)
+			const filtered = categoryArr.filter(
+				(category) => category !== selectedCategory,
+			)
 
-  function getNicknameByKey() {
-    const data = localStorage.getItem(selectedCategory);
+			setCategoryArr(filtered)
+			setNicknameArr([])
+		} else {
+			return
+		}
+	}
 
-    if (data === null || data === "" || data.length === 0) {
-      setNicknameArr([]);
-    } else {
-      setNicknameArr(JSON.parse(data));
-    }
-  }
+	function getCategoryByKey() {
+		//스토리지 키 불러오기
+		const localLength = localStorage.length
+		let localKeyArr = []
 
-  function handleCategoryChange(event) {
-    setSelectedCategory(event.target.value);
-    const data = localStorage.getItem(selectedCategory);
-    //  console.log(typeof JSON.stringify(data));
-    if (data === null || data === "") return;
-    //setNicknameArr(data);
-  }
+		for (let i = 0; i < localLength; i++) {
+			const key = localStorage.key(i)
+			if (key.includes('word-list')) {
+				localKeyArr.push(key)
+			}
+			setCategoryArr(localKeyArr)
+			if (localKeyArr.length < 0) return
+			setSelectedCategory(localKeyArr[0])
+		}
+	}
 
-  useEffect(() => {
-    getCategoryByKey();
-  }, []);
+	function getNicknameByKey() {
+		const data = localStorage.getItem(selectedCategory)
 
-  useEffect(() => {
-    setNickname("");
-  }, [nicknameArr]);
+		if (data === null || data === '' || data.length === 0) {
+			setNicknameArr([])
+		} else {
+			setNicknameArr(JSON.parse(data))
+		}
+	}
 
-  useEffect(() => {
-    getNicknameByKey();
-  }, [selectedCategory]);
+	function handleCategoryChange(event) {
+		setSelectedCategory(event.target.value)
+		const data = localStorage.getItem(selectedCategory)
+		//  console.log(typeof JSON.stringify(data));
+		if (data === null || data === '') return
+		//setNicknameArr(data);
+	}
 
-  useEffect(() => {
-    if (selectedCategory === "") return;
-    setSelectedCategory(categoryArr[0]);
-  }, []);
+	useEffect(() => {
+		getCategoryByKey()
+	}, [])
 
-  // 여러 카테고리가 존재하다 삭제를 통해 1개의 카테고리만 남았을때
-  useEffect(() => {
-    if (categoryArr.length === 1) {
-      setSelectedCategory(categoryArr[0]);
-    } else if (categoryArr.length > 1) {
-      setSelectedCategory(categoryArr[0]);
-    }
-  }, [categoryArr]);
+	useEffect(() => {
+		setNickname('')
+	}, [nicknameArr])
 
-  return (
-    <div className="App">
-      <AddModal
-        isModalOn={isModalOn}
-        setIsModalOn={setIsModalOn}
-        setCategoryArr={setCategoryArr}
-        setSelectedCategory={setSelectedCategory}
-      />
-      <Flex pt={"100px"}>
-        <Flex h="100vh" m={"0 auto"}>
-          <VStack w={"500px"} borderRadius={"4px"}>
-            <Text fontSize={"12px"} color={"gray.700"}>
-              주의사항 : 인터넷 검색기록, 쿠키 등을 삭제하면 데이터가 초기화
-              됩니다.
-            </Text>
-            <VStack
-              w={"100%"}
-              border={"1px solid #d3d3d3"}
-              p={"15px 20px"}
-              borderRadius={"4px"}
-            >
-              <Flex
-                w={"100%"}
-                alignItems={"center"}
-                justifyContent={"space-between"}
-              >
-                <FormLabel margin={"0px"}>카테고리</FormLabel>
-                <Button size={"xs"} onClick={() => setIsModalOn(true)}>
-                  +
-                </Button>
-              </Flex>
-              <Select onChange={handleCategoryChange}>
-                {categoryArr.length > 0 ? (
-                  categoryArr.map((category) => (
-                    <option value={category}>{category.replace("-word-list", "")}</option>
-                  ))
-                ) : (
-                  <option>카테고리가 없습니다.</option>
-                )}
-              </Select>
-              <Button w={"100%"} colorScheme={"red"} onClick={resetCategory}>
-                선택한 카테고리 삭제
-              </Button>
-            </VStack>
-            {categoryArr.length !== 0 && (
-              <VStack
-                w={"100%"}
-                border={"1px solid #d3d3d3"}
-                p={"15px 20px"}
-                borderRadius={"4px"}
-              >
-                <form onSubmit={onSubmit} style={{ width: "100%" }}>
-                  <FormLabel>단어 추가</FormLabel>
-                  <Input
-                    value={nickname}
-                    onChange={onChangeInput}
-                    placeholder="추가할 단어를 입력하세요."
-                    required
-                  ></Input>
-                </form>
-              </VStack>
-            )}
-            {nicknameArr.length !== 0 && (
-              <>
-                <Button
-                  mt={"30px"}
-                  w={"100%"}
-                  colorScheme={"green"}
-                  onClick={random}
-                >
-                  랜덤 뽑기
-                </Button>
-                <VStack
-                  border={"1px solid #d3d3d3"}
-                  p={"15px 20px"}
-                  borderRadius={"4px"}
-                  w={"100%"}
-                >
-                  <Text fontSize={"sm"}>{nicknameArr.length}개</Text>
-                  <HStack flexWrap={"wrap"} w={"100%"}>
-                    {nicknameArr.length > 0 &&
-                      nicknameArr.map((nick) => <Badge cursor={"pointer"} onClick={()=>onWordClick(nick)}>{nick}</Badge>)}
-                  </HStack>
-                </VStack>
-              </>
-            )}
-          </VStack>
-        </Flex>
-      </Flex>
-    </div>
-  );
+	useEffect(() => {
+		getNicknameByKey()
+	}, [selectedCategory])
+
+	useEffect(() => {
+		if (selectedCategory === '') return
+		setSelectedCategory(categoryArr[0])
+	}, [])
+
+	// 여러 카테고리가 존재하다 삭제를 통해 1개의 카테고리만 남았을때
+	useEffect(() => {
+		if (categoryArr.length === 1) {
+			setSelectedCategory(categoryArr[0])
+		} else if (categoryArr.length > 1) {
+			setSelectedCategory(categoryArr[0])
+		}
+	}, [categoryArr])
+
+	console.log(canExist)
+	return (
+		<div className="App">
+			<AddModal
+				isModalOn={isModalOn}
+				setIsModalOn={setIsModalOn}
+				setCategoryArr={setCategoryArr}
+				setSelectedCategory={setSelectedCategory}
+			/>
+			<Flex pt={'100px'}>
+				<Flex h="100vh" m={'0 auto'}>
+					<VStack w={'500px'} borderRadius={'4px'}>
+						<Text fontSize={'12px'} color={'gray.700'}>
+							주의사항 : 인터넷 검색기록, 쿠키 등을 삭제하면 데이터가 초기화
+							됩니다.
+						</Text>
+						<VStack
+							w={'100%'}
+							border={'1px solid #d3d3d3'}
+							p={'15px 20px'}
+							borderRadius={'4px'}
+						>
+							<Flex
+								w={'100%'}
+								alignItems={'center'}
+								justifyContent={'space-between'}
+							>
+								<FormLabel margin={'0px'}>카테고리</FormLabel>
+								<Button size={'xs'} onClick={() => setIsModalOn(true)}>
+									+
+								</Button>
+							</Flex>
+							<Select onChange={handleCategoryChange}>
+								{categoryArr.length > 0 ? (
+									categoryArr.map((category) => (
+										<option value={category}>
+											{category.replace('-word-list', '')}
+										</option>
+									))
+								) : (
+									<option>카테고리가 없습니다.</option>
+								)}
+							</Select>
+							<Button w={'100%'} colorScheme={'red'} onClick={resetCategory}>
+								선택한 카테고리 삭제
+							</Button>
+						</VStack>
+						{categoryArr.length !== 0 && (
+							<VStack
+								w={'100%'}
+								border={'1px solid #d3d3d3'}
+								p={'15px 20px'}
+								borderRadius={'4px'}
+							>
+								<form onSubmit={onSubmit} style={{ width: '100%' }}>
+									<FormLabel>단어 추가</FormLabel>
+									<Input
+										value={nickname}
+										onChange={onChangeInput}
+										placeholder="추가할 단어를 입력하세요."
+										required
+									></Input>
+								</form>
+							</VStack>
+						)}
+						{nicknameArr.length !== 0 && (
+							<>
+								<HStack
+									w={'100%'}
+									alignItems={'center'}
+									boxSizing={'border-box'}
+									p={'0 10px'}
+									justifyContent={'center'}
+								>
+									<Button w={'58%'} colorScheme={'green'} onClick={random}>
+										랜덤 뽑기
+									</Button>
+									<NumberInput
+										defaultValue={randomCount}
+										min={1}
+										max={nicknameArr.length}
+										w={'20%'}
+										onChange={(value) => setRandomCount(value)}
+									>
+										<NumberInputField />
+										<NumberInputStepper>
+											<NumberIncrementStepper />
+											<NumberDecrementStepper />
+										</NumberInputStepper>
+									</NumberInput>
+									<Checkbox
+										colorScheme="green"
+										onChange={() => setCanExist((prev) => !prev)}
+									>
+										중복허용
+									</Checkbox>
+								</HStack>
+								<VStack
+									border={'1px solid #d3d3d3'}
+									p={'15px 20px'}
+									borderRadius={'4px'}
+									w={'100%'}
+								>
+									<Text fontSize={'sm'}>{nicknameArr.length}개</Text>
+									<HStack flexWrap={'wrap'} w={'100%'}>
+										{nicknameArr.length > 0 &&
+											nicknameArr.map((nick) => (
+												<Badge
+													cursor={'pointer'}
+													onClick={() => onWordClick(nick)}
+												>
+													{nick}
+												</Badge>
+											))}
+									</HStack>
+								</VStack>
+							</>
+						)}
+					</VStack>
+				</Flex>
+			</Flex>
+		</div>
+	)
 }
 
-export default App;
+export default App
