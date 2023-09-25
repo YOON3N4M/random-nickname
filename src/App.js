@@ -31,14 +31,37 @@ function App() {
 
   function onSubmit(event) {
     event.preventDefault();
-    localStorage.setItem(
-      selectedCategory,
-      JSON.stringify([...nicknameArr, nickname])
-    );
+    if(selectedCategory.includes("-word-list")){
+      localStorage.setItem(
+        `${selectedCategory}`,
+        JSON.stringify([...nicknameArr, nickname])
+      );
+    } else {
+      localStorage.setItem(
+        `${selectedCategory}-word-list`,
+        JSON.stringify([...nicknameArr, nickname])
+      );
+    }
+   
     setNicknameArr((prev) => [...prev, nickname]);
   }
 
-  function onWordClick() {}
+  function onWordClick(word) {
+    const filtered = nicknameArr.filter((item)=> item !== word)
+    setNicknameArr(filtered)
+    if(selectedCategory.includes("-word-list")){
+      localStorage.setItem(
+        `${selectedCategory}`,
+        JSON.stringify(filtered)
+      );
+    } else {
+      localStorage.setItem(
+        `${selectedCategory}-word-list`,
+        JSON.stringify(filtered)
+      );
+    }
+   
+  }
 
   function random() {
     if (nicknameArr.length > 0) {
@@ -72,6 +95,7 @@ function App() {
       const filtered = categoryArr.filter(
         (category) => category !== selectedCategory
       );
+
       setCategoryArr(filtered);
       setNicknameArr([]);
     } else {
@@ -79,14 +103,14 @@ function App() {
     }
   }
 
-  function getData() {
+  function getCategoryByKey() {
     //스토리지 키 불러오기
     const localLength = localStorage.length;
     let localKeyArr = [];
 
     for (let i = 0; i < localLength; i++) {
       const key = localStorage.key(i);
-      if (key !== "chakra-ui-color-mode") {
+      if (key.includes("word-list")) {
         localKeyArr.push(key);
       }
       setCategoryArr(localKeyArr);
@@ -114,7 +138,7 @@ function App() {
   }
 
   useEffect(() => {
-    getData();
+    getCategoryByKey();
   }, []);
 
   useEffect(() => {
@@ -173,7 +197,7 @@ function App() {
               <Select onChange={handleCategoryChange}>
                 {categoryArr.length > 0 ? (
                   categoryArr.map((category) => (
-                    <option value={category}>{category}</option>
+                    <option value={category}>{category.replace("-word-list", "")}</option>
                   ))
                 ) : (
                   <option>카테고리가 없습니다.</option>
@@ -219,8 +243,8 @@ function App() {
                 >
                   <Text fontSize={"sm"}>{nicknameArr.length}개</Text>
                   <HStack flexWrap={"wrap"} w={"100%"}>
-                    {nicknameArr.length !== 0 &&
-                      nicknameArr.map((nick) => <Badge>{nick}</Badge>)}
+                    {nicknameArr.length > 0 &&
+                      nicknameArr.map((nick) => <Badge cursor={"pointer"} onClick={()=>onWordClick(nick)}>{nick}</Badge>)}
                   </HStack>
                 </VStack>
               </>

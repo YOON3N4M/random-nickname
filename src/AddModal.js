@@ -22,7 +22,7 @@ export default function AddModal({
 
   function addCategory(event) {
     event.preventDefault();
-    localStorage.setItem(category, []);
+    localStorage.setItem(`${category}-word-list`, []);
     setCategoryArr((prev) => [...prev, category]);
     setCategory("");
     setIsModalOn(false);
