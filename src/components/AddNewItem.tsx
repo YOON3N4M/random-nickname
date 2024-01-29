@@ -1,15 +1,16 @@
 import { FormLabel, Input, VStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
+import { generateId } from '../utils'
 
 export interface Item {
-	id: number
+	id: string
 	body: string
-	categoryId: number
+	categoryId: string
 }
 
 interface Props {
 	setItems: React.Dispatch<React.SetStateAction<Item[]>>
-	selectedCategory: number | undefined
+	selectedCategory: string | undefined
 }
 
 export default function AddNewItem(props: Props) {
@@ -29,7 +30,7 @@ export default function AddNewItem(props: Props) {
 		}
 
 		const newItem: Item = {
-			id: 0,
+			id: generateId('item'),
 			body: itemBody,
 			categoryId: selectedCategory,
 		}

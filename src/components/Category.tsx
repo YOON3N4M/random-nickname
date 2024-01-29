@@ -9,16 +9,17 @@ import {
 	VStack,
 } from '@chakra-ui/react'
 import React, { useState } from 'react'
+import { generateId } from '../utils'
 
 export interface CategoryT {
-	id: number
+	id: string
 	name: string
 }
 
 interface Props {
 	categories: CategoryT[]
 	setCategoryArr: React.Dispatch<React.SetStateAction<CategoryT[]>>
-	setSelectedCategory: React.Dispatch<React.SetStateAction<number | undefined>>
+	setSelectedCategory: React.Dispatch<React.SetStateAction<string | undefined>>
 }
 
 export default function Category(props: Props) {
@@ -33,7 +34,7 @@ export default function Category(props: Props) {
 	function createNewCategory(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault()
 		const newCategory: CategoryT = {
-			id: categories.length,
+			id: generateId('category'),
 			name: newCategoryName,
 		}
 
@@ -42,7 +43,7 @@ export default function Category(props: Props) {
 	}
 
 	function onSelectChange(e: React.ChangeEvent<HTMLSelectElement>) {
-		setSelectedCategory(Number(e.target.value))
+		setSelectedCategory(e.target.value)
 	}
 
 	return (

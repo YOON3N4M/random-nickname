@@ -25,7 +25,7 @@ import ItemList from './components/ItemList'
 
 function App() {
 	const [categoryArr, setCategoryArr] = useState<CategoryT[]>([])
-	const [selectedCategory, setSelectedCategory] = useState<number>()
+	const [selectedCategory, setSelectedCategory] = useState<string>()
 
 	const [items, setItems] = useState<Item[]>([])
 
