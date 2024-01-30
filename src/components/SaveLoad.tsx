@@ -65,6 +65,9 @@ export default function SaveLoad(props: Props) {
 			return false
 		}
 
+		const saveKeySuccess = saveKeyLocalStorage()
+		if (!saveKeySuccess) return
+
 		const docRef = doc(dbService, 'saveKey', saveKey)
 
 		const res = (await getDoc(docRef)).data() as SavedData
