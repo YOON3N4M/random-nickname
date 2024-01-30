@@ -24,7 +24,7 @@ export default function AddNewItem(props: Props) {
 
 	function createNewItem(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault()
-		if (selectedCategory === undefined) {
+		if (selectedCategory === undefined || selectedCategory === '') {
 			alert('선택된 카테고리가 없습니다.')
 			return
 		}
@@ -34,6 +34,8 @@ export default function AddNewItem(props: Props) {
 			body: itemBody,
 			categoryId: selectedCategory,
 		}
+		setItemBody('')
+		setItems((prev) => [...prev, newItem])
 	}
 
 	return (

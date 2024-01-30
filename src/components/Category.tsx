@@ -38,12 +38,14 @@ export default function Category(props: Props) {
 			name: newCategoryName,
 		}
 
+		setNewCategoryName('')
 		setCategoryArr((prev) => [...prev, newCategory])
 		setIsAdd(false)
 	}
 
 	function onSelectChange(e: React.ChangeEvent<HTMLSelectElement>) {
 		setSelectedCategory(e.target.value)
+		console.log(typeof e.target.value)
 	}
 
 	return (
@@ -69,6 +71,7 @@ export default function Category(props: Props) {
 					<form onSubmit={createNewCategory}>
 						<Flex gap={'10px'}>
 							<Input
+								value={newCategoryName}
 								onChange={onChange}
 								placeholder="새 카테고리 이름"
 								required
@@ -80,7 +83,9 @@ export default function Category(props: Props) {
 				{!isAdd && (
 					<Select onChange={onSelectChange} placeholder="카테고리를 선택하세요">
 						{categories.map((category) => (
-							<option value={category.id}>{category.name}</option>
+							<option key={category.id} value={category.id}>
+								{category.name}
+							</option>
 						))}
 					</Select>
 				)}
