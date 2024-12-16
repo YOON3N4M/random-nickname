@@ -49,7 +49,7 @@ export default function SaveLoad(props: Props) {
       categoryList,
     };
 
-    await postSaveDocument(LOCAL_STORAGE_KEY.saveKey, data);
+    await postSaveDocument(key, data);
 
     toast("세이브를 정상적으로 저장했습니다.");
   }
