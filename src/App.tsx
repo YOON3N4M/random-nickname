@@ -1,40 +1,36 @@
 import {
-  Badge,
-  Box,
   Button,
   Center,
   Checkbox,
   Flex,
-  FormLabel,
   HStack,
-  Input,
   NumberDecrementStepper,
   NumberIncrementStepper,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  Select,
   Text,
   useToast,
   VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import Category, { CategoryT } from "./components/Category";
-import AddNewItem, { Item } from "./components/AddNewItem";
-import ItemList from "./components/ItemList";
-import SaveLoad from "./components/SaveLoad";
+import AddNewItemContainer, { Item } from "./components/AddNewItemContainer";
+import CategoryContainer from "./components/CategoryContainer";
+import SaveLoadContainer from "./components/SaveLoadContainer";
+import { Category } from "./types";
+import ItemListContainer from "./components/ItemListContainer";
 
 function App() {
-  const [categoryArr, setCategoryArr] = useState<CategoryT[]>([]);
+  const [categoryList, setCategoryList] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>();
   const [randomCount, setRandomCount] = useState(1);
   const [allowExist, setAllowExist] = useState(false);
-  const [items, setItems] = useState<Item[]>([]);
+  const [itemList, setItemList] = useState<Item[]>([]);
 
   const toast = useToast();
 
   function getRandomItem() {
-    const filterd = items.filter(
+    const filterd = itemList.filter(
       (item) => item.categoryId === selectedCategory
     );
     const randomResult: Item[] = [];
@@ -78,31 +74,34 @@ function App() {
     });
   }
 
+  useEffect(() => {
+    console.log(categoryList);
+  }, [categoryList]);
   return (
     <div className="App">
       <Flex pt={"100px"}>
         <Flex h="100vh" m={"0 auto"}>
-          <VStack w={"500px"} borderRadius={"4px"}>
+          <VStack maxW={"500px"} borderRadius={"4px"}>
             <Text fontSize={"12px"} color={"gray.700"}>
               이용 후 저장하지 않으면 마지막 저장이후 데이터가 초기화 됩니다.
             </Text>
             <Text fontSize={"12px"} color={"gray.700"}>
               저장시 입력한 세이브키는 이후 자동으로 저장 됩니다.
             </Text>
-            <SaveLoad
-              items={items}
-              categoryArr={categoryArr}
-              setCategoryArr={setCategoryArr}
-              setItems={setItems}
+            <SaveLoadContainer
+              itemList={itemList}
+              categoryList={categoryList}
+              setCategoryList={setCategoryList}
+              setItemList={setItemList}
             />
-            <Category
-              categories={categoryArr}
-              setCategoryArr={setCategoryArr}
+            <CategoryContainer
+              categoryList={categoryList}
+              setCategoryList={setCategoryList}
               setSelectedCategory={setSelectedCategory}
             />
 
-            <AddNewItem
-              setItems={setItems}
+            <AddNewItemContainer
+              setItemList={setItemList}
               selectedCategory={selectedCategory}
             />
             <HStack
@@ -135,9 +134,9 @@ function App() {
                 중복허용
               </Checkbox>
             </HStack>
-            <ItemList
-              items={items}
-              setItems={setItems}
+            <ItemListContainer
+              itemList={itemList}
+              setItemList={setItemList}
               selectedCategory={selectedCategory}
             />
           </VStack>
